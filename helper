@@ -1,0 +1,73 @@
+#!/usr/bin/python3
+
+import os
+
+m_mode = False
+name = final = ""
+
+name = input("Route Name: (blank for middleware)")
+
+if name == "":
+  m_mode = True
+  name = input("Middleware Name: ")
+
+for word in name.split(" "):
+  final += word[0].upper()
+  final += word[1:]
+
+if m_mode:
+  try:
+    with open(f"src/middlewares/{final}.ts", "x") as file:
+      file.writelines([
+        "import { Request, Response, NextFunction } from \"express\";\n",
+        "import { Middleware } from \".\";\n\n",
+        f"export class {final} implements Middleware " + "{\n",
+        "  public intercept(request: Request, response: Response, next: NextFunction) {\n",
+        "    return next();\n",
+        "  }\n}\n"
+      ])
+
+    with open(f"src/middlewares/index.ts", "a") as file:
+      file.write(f"export * from \"./{final}\";\n")
+
+  except FileExistsError: print("This middleware already exists. No changes were made.")
+  except: print("Erro desconhecido")
+
+else:
+  controller = f"src/controllers/{final}Controller.ts"
+  service = f"src/services/{final}Service.ts"
+
+  try:
+    if os.path.exists(f"src/controllers/{final}Controller.ts") \
+      or os.path.exists(f"src/controllers/{final}Controller.ts"): raise FileExistsError
+
+    with open(f"src/controllers/{final}Controller.ts", "x") as file:
+      file.writelines([
+        "import { Request, Response } from \"express\";\n",
+        "import { Controller } from \".\";\n",
+        "import {" + f"{final}Service" + "} from \"../services\";\n\n",
+        f"export class {final}Controller implements Controller" + " {\n",
+        "  public async handle(request: Request, response: Response) {\n",
+        f"    const service = new {final}Service();\n\n",
+        "    return response.json(service.execute());\n",
+        "  }\n}\n"
+      ])
+
+    with open(f"src/services/{final}Service.ts", "x") as file:
+      file.writelines([
+        "import { Service } from \"services\";\n\n",
+        f"export class {final}Service implements Service" + " {\n",
+        "  public async execute() {\n",
+        "    return { message: \"MESSAGE\" };\n",
+        "  }\n}\n"
+      ])
+
+    with open(f"src/controllers/index.ts", "a") as file:
+      file.write(f"export * from \"./{final}Controller\";\n")
+
+    with open(f"src/services/index.ts", "a") as file:
+      file.write(f"export * from \"./{final}Service\";\n")
+
+  except FileExistsError: print("This middleware already exists. No changes were made.")
+  except: print("Erro desconhecido")
+
