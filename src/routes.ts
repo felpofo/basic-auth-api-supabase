@@ -32,13 +32,13 @@ class Routes {
     return this;
   }
 
-  public getRoutes(): Router { return this.router; }
+  public getRoutes() { return this.router; }
 
   private routes: Route[] = [
     {
       method: "GET",
       path: "/",
-      controller: { async handle(_, res) { res.status(200).json({ message: "OK" }); }},
+      controller: { async handle(_, res) { res.status(200).json({ message: "OK" }); } },
     },
     {
       method: "POST",
@@ -52,18 +52,9 @@ class Routes {
     },
     {
       method: "GET",
-      path: "/user-content",
+      path: "/ficha",
       middlewares: [new Middlewares.EnsureAuth],
-      controller: new Controllers.UserContentController,
-    },
-    {
-      method: "GET",
-      path: "/admin-content",
-      middlewares: [
-        new Middlewares.EnsureAuth,
-        new Middlewares.EnsureAdmin
-      ],
-      controller: new Controllers.AdminContentController,
+      controller: new Controllers.GetLunchTokenController,
     }
   ];
 }

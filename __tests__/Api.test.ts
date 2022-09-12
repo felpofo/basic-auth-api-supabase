@@ -1,7 +1,7 @@
 import request from "supertest";
 import axios from "axios";
 import { server } from "../src/server";
-import { LoginResponse } from "../src/services";
+import { LoginResponse } from "../src/types";
 
 describe("Api", () => {
   afterAll(() => { server.close(); });

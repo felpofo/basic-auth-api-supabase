@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 
 export interface Controller {
-  handle: (request: Request, response: Response) => Promise<Response | void>;
+  handle: (request: Request, response: Response) => Promise<Response>;
 }
 
-export { LoginController } from "./LoginController";
-export { UserContentController } from "./UserContentController";
-export { AdminContentController } from "./AdminContentController";
-export { SignUpController } from "./SignUpController";
+export * from "./LoginController";
+export * from "./SignUpController";
+export * from "./GetLunchTokenController";

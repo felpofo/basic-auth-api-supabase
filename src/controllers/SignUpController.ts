@@ -6,9 +6,8 @@ export class SignUpController implements Controller {
   public async handle(request: Request, response: Response) {
     const { email, password } = request.body;
 
-    const { message, error, status, user, session } = await new SignUpService().execute({ email, password });
-
-    if (error) return response.status(status).json({ error });
-    return response.status(201).json({ message, user, session });
+    return await new SignUpService().execute({ email, password })
+      .then((json) => response.status(201).json(json))
+      .catch(({ error, status }) => response.status(status).json({ error }));
   }
 }

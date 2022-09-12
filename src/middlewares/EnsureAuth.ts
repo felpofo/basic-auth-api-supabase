@@ -13,15 +13,7 @@ export class EnsureAuth implements Middleware {
     try {
       const { sub } = verify(token, process.env.SUPABASE_JWT_SECRET as string) as { sub: string };
 
-      /**
-       *! ==================== WARNING ====================
-       *? this approach causes an security breach modifying
-       *? userid on the ensureAdmin is possible with proxy
-       *? if this app lists publicaly all users from the db
-       *! =================================================
-       */
-
-      request.headers.userId = sub;
+      request.user_id = sub;
 
       return next();
     } catch {
